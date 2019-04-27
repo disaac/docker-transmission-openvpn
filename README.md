@@ -1,3 +1,23 @@
+# Running Blackvpn docker-compose-blvpn-sdunixgeek
+
+To use the blackvpn for sdunixgeek do the following:
+
+* Do the following in the project directory in your shell:
+
+```bash
+export BVPN_OPENVPN_USERNAME=<blackvpn_password>
+export BVPN_OPENVPN_PASSWORD=<blackvpn_password>
+# Torrent download directory location
+export BLVPN_TORRENT_DL_DIR=${HOME}/Documents/TorrentDownloads
+# timezone file
+mkdir -p ${HOME}/etc
+echo 'America/Los_Angeles' > ${HOME}/etc/timezone
+chmod a+r ${HOME}/etc/timezone
+chmod a+rx ${HOME}/etc
+export BLVPN_TZONE_FILE=${HOME}/etc/timezone
+# Run the docker container with the custom docker-compose file
+docker-compose -f docker-compose-blvpn-sdunixgeek.yml up -d
+```
 # OpenVPN and Transmission with WebUI
 
 [![Docker Automated build](https://img.shields.io/docker/automated/haugene/transmission-openvpn.svg)](https://hub.docker.com/r/haugene/transmission-openvpn/)
@@ -365,7 +385,7 @@ Note that you still need to modify your .ovpn file as described in the previous 
 Mount the folder contianing all the required files instead of the openvpn.ovpn file.
 `-v /path/to/your/config/:/etc/openvpn/custom/`
 
-Additionally the .ovpn config should include the full path on the docker container to the ca.crt and additional files. 
+Additionally the .ovpn config should include the full path on the docker container to the ca.crt and additional files.
 `ca /etc/openvpn/custom/ca.crt`
 
 If `-e OPENVPN_CONFIG=` variable has been omitted from the `docker run` command the .ovpn config file must be named default.ovpn. IF `-e OPENVPN_CONFIG=` is used with the custom provider the .ovpn config and variable must match as described above.
