@@ -20,7 +20,7 @@ if [[ "${SABNZBD_ENABLED}" = "true" ]]; then
 
   find_sabnzbd_conf
   echo "Found config file $SABNZBD_CONF, updating settings."
-  service sabnzbd start
+  service sabnzbdplus start
   echo "sabnzbd startup script complete."
 
 fi

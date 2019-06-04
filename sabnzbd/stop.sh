@@ -2,6 +2,6 @@
 
 if [[ "${SABNZBD_ENABLED}" = "true" ]]; then
 
-  service sabnzbd stop
+  service sabnzbdplus stop
 
 fi

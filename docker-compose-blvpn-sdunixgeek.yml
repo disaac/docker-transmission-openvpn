@@ -2,7 +2,7 @@ version: '3'
 # Customized for sdunixgeek blackvpn account
 services:
  transmission:
-  image: haugene/transmission-openvpn
+  image: dsuper7/transmission-sabnzbd-openvpn
   cap_add:
     - NET_ADMIN
   restart: always
@@ -17,8 +17,9 @@ services:
   volumes:
     - ${BLVPN_TZONE_FILE}:/etc/localtime:ro
     - ${BLVPN_TORRENT_DL_DIR}:/data
-    - ${BLVPN_SABNZBD_DL_DIR}:/data
+    - ${BLVPN_SABNZBD_HOME_DIR}:/config/sabnzbd-home
     - ${BLVPN_SABNZBD_DL_DIR}:/config/sabnzbd-home/Downloads
+
   dns:
     - 8.8.8.8
     - 8.8.4.4

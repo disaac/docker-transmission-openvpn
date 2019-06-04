@@ -149,9 +149,11 @@ ENV OPENVPN_USERNAME=**None** \
     SABNZBD_INCOMPLETE_DIR=/config/sabnzbd-home/Downloads/incomplete \
     SABNZBD_WATCH_DIR=/config/sabnzbd-home/Downloads/nzbStart \
     SABNZBD_WEB_PORT=8081 \
+    SABNZBD_NZB_BAK= \
+    SABNZBD_NZB_SCRIPTS= \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
-    LC_ALL=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8
 
 HEALTHCHECK --interval=5m CMD /etc/scripts/healthcheck.sh
 
