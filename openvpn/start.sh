@@ -105,7 +105,7 @@ echo "${TRANSMISSION_RPC_PASSWORD}" >> /config/transmission-credentials.txt
 
 # Persist transmission settings for use by transmission-daemon
 dockerize -template /etc/transmission/environment-variables.tmpl:/etc/transmission/environment-variables.sh
-
+dockerize -template /etc/sabnzbd/environment-variables.tmpl:/etc/sabnzbd/environment-variables.sh
 TRANSMISSION_CONTROL_OPTS="--script-security 2 --up-delay --up /etc/openvpn/tunnelUp.sh --down /etc/openvpn/tunnelDown.sh"
 
 ## If we use UFW or the LOCAL_NETWORK we need to grab network config info

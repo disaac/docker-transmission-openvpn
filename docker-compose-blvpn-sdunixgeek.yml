@@ -11,11 +11,14 @@ services:
   ports:
     - "9091:9091"
     - "8888:8888"
+    - "8081:8081"
   sysctls:
     - net.ipv6.conf.all.disable_ipv6=0
   volumes:
     - ${BLVPN_TZONE_FILE}:/etc/localtime:ro
     - ${BLVPN_TORRENT_DL_DIR}:/data
+    - ${BLVPN_SABNZBD_DL_DIR}:/data
+    - ${BLVPN_SABNZBD_DL_DIR}:/config/sabnzbd-home/Downloads
   dns:
     - 8.8.8.8
     - 8.8.4.4
@@ -32,9 +35,12 @@ services:
     - TRANSMISSION_INCOMPLETE_DIR=/data/incomplete
     - TRANSMISSION_INCOMPLETE_DIR_ENABLED=true
     - TRANSMISSION_PEER_PORT=51413
+    - SABNZBD_ENABLED=true
+    - SABNZBD_INCOMPLETE_DIR=/config/sabnzbd-home/Downloads/incomplete
+    - SABNZBD_COMPLETE_DIR=/config/sabnzbd-home/Downloads/complete
     - ENABLE_UFW=true
     - UFW_ALLOW_GW_NET=true
-    - UFW_EXTRA_PORTS=9910,23561,443,51413
+    - UFW_EXTRA_PORTS=9910,23561,443,51413,8081
     - WEBPROXY_ENABLED=true
     - WEBPROXY_PORT=8888
 #  proxy:
