@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:16.04
 
 VOLUME /data
 VOLUME /config
@@ -7,17 +7,23 @@ ARG DOCKERIZE_ARCH=amd64
 ARG DOCKERIZE_VERSION=v0.6.1
 ARG DUMBINIT_VERSION=1.2.2
 
-# Required for omitting the tzdata configuration dialog
-ENV DEBIAN_FRONTEND=noninteractive
-
 # Update, upgrade and install core software
 RUN apt update \
     && apt -y upgrade \
     && apt -y install software-properties-common wget git curl jq \
+    && add-apt-repository multiverse \
+    && add-apt-repository universe \
     && add-apt-repository ppa:transmissionbt/ppa \
+    && add-apt-repository ppa:jcfp/sab-addons \
+    && add-apt-repository ppa:jcfp/ppa \
+
+    && wget -O - https://swupdate.openvpn.net/repos/repo-public.gpg | apt-key add - \
+    && echo "deb http://build.openvpn.net/debian/openvpn/stable xenial main" > /etc/apt/sources.list.d/openvpn-aptrepo.list \
     && apt update \
-    && apt install -y sudo transmission-cli transmission-common transmission-daemon curl rar unrar zip unzip ufw iputils-ping openvpn bc tzdata \
-    python2.7 python2.7-pysqlite2 && ln -sf /usr/bin/python2.7 /usr/bin/python2 \
+    && apt install -y sudo transmission-cli transmission-common transmission-daemon curl rar unrar zip unzip ufw iputils-ping openvpn bc tzdata sabnzbdplus python-sabyenc\
+    python2.7 python2.7-pysqlite2 par2-tbb locales \
+    && ln -sf /usr/bin/python2.7 /usr/bin/python2 \
+    && locale-gen en_US.UTF-8 \
     && wget https://github.com/Secretmapper/combustion/archive/release.zip \
     && unzip release.zip -d /opt/transmission-ui/ \
     && rm release.zip \
@@ -36,11 +42,12 @@ RUN apt update \
     && apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && groupmod -g 1000 users \
     && useradd -u 911 -U -d /config -s /bin/false abc \
-    && usermod -G users abc
-
+    && usermod -G users abc \
+    && printf "USER=root\nHOST=0.0.0.0\nPORT=8081\nCONFIG=/config/sabnzbd-home\n" > /etc/default/sabnzbdplus
 ADD openvpn/ /etc/openvpn/
 ADD transmission/ /etc/transmission/
 ADD tinyproxy /opt/tinyproxy/
+ADD sabnzbd/ /etc/sabnzbd/
 ADD scripts /etc/scripts/
 
 ENV OPENVPN_USERNAME=**None** \
@@ -134,11 +141,23 @@ ENV OPENVPN_USERNAME=**None** \
     WEBPROXY_ENABLED=false \
     WEBPROXY_PORT=8888 \
     HEALTH_CHECK_HOST=google.com \
-    DOCKER_LOG=false
+    SABNZBD_ENABLED= \
+    SABNZBD_HOME=/config/sabnzbd-home \
+    SABNZBD_DOWNLOAD_DIR=/config/sabnzbd-home/Downloads \
+    SABNZBD_COMPLETE_DIR=/config/sabnzbd-home/Downloads/complete \
+    SABNZBD_INCOMPLETE_DIR=/config/sabnzbd-home/Downloads/incomplete \
+    SABNZBD_WATCH_DIR=/config/sabnzbd-home/Downloads/nzbStart \
+    SABNZBD_WEB_PORT=8081 \
+    SABNZBD_NZB_BAK= \
+    SABNZBD_NZB_SCRIPTS= \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
 
 HEALTHCHECK --interval=5m CMD /etc/scripts/healthcheck.sh
 
 # Expose port and run
 EXPOSE 9091
 EXPOSE 8888
+EXPOSE 8081
 CMD ["dumb-init", "/etc/openvpn/start.sh"]
