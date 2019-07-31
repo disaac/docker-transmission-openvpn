@@ -1,0 +1,61 @@
+version: '3'
+# Customized for sdunixgeek blackvpn account
+services:
+ transmission:
+  image: dsuper7/transmission-sabnzbd-openvpn
+  cap_add:
+    - NET_ADMIN
+  restart: unless-stopped
+  devices:
+    - /dev/net/tun
+  ports:
+    - "${BLVPN_TRANSMISSION_PORT:-9091}:9091"
+    - "${BLVPN_PROXY_PORT:-8888}:8888"
+    - "${BLVPN_SABNZBD_WEBPORT:-8081}:8081"
+  sysctls:
+    - net.ipv6.conf.all.disable_ipv6=0
+  volumes:
+    - ${BLVPN_TORRENT_DL_DIR}:/data
+    - ${BLVPN_SABNZBD_HOME_DIR}:/config/sabnzbd-home
+    - ${BLVPN_SABNZBD_DL_DIR}:/config/sabnzbd-home/Downloads
+
+  dns:
+    - 8.8.8.8
+    - 8.8.4.4
+  environment:
+    - OPENVPN_PROVIDER=BLACKVPN
+    - TZ=${BLVPN_TZ:-Etc/UTC}
+    - OPENVPN_CONFIG=Privacy-Netherlands,Privacy-Netherlands-TCP,Privacy-Luxembourg-TCP,Privacy-Luxembourg
+    - OPENVPN_USERNAME=${BVPN_OPENVPN_USERNAME}
+    - OPENVPN_PASSWORD=${BVPN_OPENVPN_PASSWORD}
+    - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60 --pull-filter ignore ping
+    - LOCAL_NETWORK=192.168.1.0/24
+    - TRANSMISSION_BLOCKLIST_ENABLED=true
+    - TRANSMISSION_BLOCKLIST_URL=http://john.bitsurge.net/public/biglist.p2p.gz
+    - TRANSMISSION_DOWNLOAD_DIR=/data/completed
+    - TRANSMISSION_INCOMPLETE_DIR=/data/incomplete
+    - TRANSMISSION_INCOMPLETE_DIR_ENABLED=false
+    - TRANSMISSION_PEER_PORT=51413
+    - SABNZBD_ENABLED=${BLVPN_SABNZBD_ENABLED:-true}
+    - SABNZBD_INCOMPLETE_DIR=/config/sabnzbd-home/Downloads/incomplete
+    - SABNZBD_COMPLETE_DIR=/config/sabnzbd-home/Downloads/complete
+    - ENABLE_UFW=true
+    - UFW_ALLOW_GW_NET=true
+    - UFW_EXTRA_PORTS=9910,23561,443,51413,8081
+    - WEBPROXY_ENABLED=true
+    - WEBPROXY_PORT=8888
+#  proxy:
+#   image: haugene/transmission-openvpn-proxy
+#   links:
+#     - transmission
+#   ports:
+#     - 8080:8080
+#   volumes:
+#     - /etc/localtime:/etc/localtime:ro
+
+#  rss:
+#   image: haugene/transmission-rss
+#   links:
+#     - transmission
+#   environment:
+#     - RSS_URL=http://.../xxxxx.rss
