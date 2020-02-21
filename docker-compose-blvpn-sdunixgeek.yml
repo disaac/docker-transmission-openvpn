@@ -25,7 +25,9 @@ services:
   environment:
     - OPENVPN_PROVIDER=BLACKVPN
     - TZ=${BLVPN_TZ:-Etc/UTC}
-    - OPENVPN_CONFIG=Privacy-Netherlands,Privacy-Netherlands-TCP,Privacy-Luxembourg-TCP,Privacy-Luxembourg
+    # - OPENVPN_CONFIG=Privacy-Estonia,Privacy-Estonia-TCP
+    - OPENVPN_CONFIG=Privacy-Netherlands
+#    - OPENVPN_CONFIG=Privacy-Netherlands,Privacy-Netherlands-TCP,Privacy-Luxembourg-TCP,Privacy-Luxembourg
     - OPENVPN_USERNAME=${BVPN_OPENVPN_USERNAME}
     - OPENVPN_PASSWORD=${BVPN_OPENVPN_PASSWORD}
     - OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60 --pull-filter ignore ping
